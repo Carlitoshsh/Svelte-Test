@@ -1,0 +1,34 @@
+{
+  "name": "svelte-test",
+  "version": "1.0.0",
+  "description": "Svelte + Rollup",
+  "main": "rollup.config.js",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "start": "sirv public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Carlitoshsh/Svelte-Test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Carlitoshsh/Svelte-Test/issues"
+  },
+  "homepage": "https://github.com/Carlitoshsh/Svelte-Test#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.2.0",
+    "rollup": "^2.41.2",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.1.0",
+    "sirv-cli": "^1.0.11",
+    "svelte": "^3.35.0"
+  },
+  "dependencies": {
+    "svelte-spa-router": "^3.1.0"
+  }
+}

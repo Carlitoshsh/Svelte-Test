@@ -1,0 +1,9 @@
+:root {
+  /* CSS HSL */
+  --light-back: hsla(108, 22%, 95%, 1);
+  --primary: hsla(108, 100%, 90%, 1);
+  --altern: hsla(48, 67%, 79%, 1);
+  --heading-color: hsla(210, 50%, 51%, 1);
+  --heading-altern: hsla(251, 10%, 33%, 1);
+  --text: hsla(180, 1%, 27%, 1);
+}
