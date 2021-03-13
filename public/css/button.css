@@ -1,0 +1,21 @@
+button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    background: var(--text);
+    color: var(--primary);
+    border: 1px solid var(--primary);
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+button:hover {
+    background: black;
+}
+
+input {
+    padding: 0.5rem 1rem;
+}
+
+input:focus {
+    border: 1px solid var(--primary);
+}
