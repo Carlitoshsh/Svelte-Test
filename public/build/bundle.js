@@ -95,6 +95,9 @@ var app = (function () {
             throw new Error('Function called outside component initialization');
         return current_component;
     }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
+    }
     function afterUpdate(fn) {
         get_current_component().$$.after_update.push(fn);
     }
@@ -1500,75 +1503,52 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[1] = list[i];
-    	child_ctx[3] = i;
+    	child_ctx[4] = list[i];
     	return child_ctx;
     }
 
-    // (18:0) {:else}
-    function create_else_block(ctx) {
-    	let p;
-
-    	return {
-    		c() {
-    			p = element("p");
-    			p.textContent = "Cargando...";
-    		},
-    		m(target, anchor) {
-    			insert(target, p, anchor);
-    		},
-    		p: noop,
-    		d(detaching) {
-    			if (detaching) detach(p);
-    		}
-    	};
-    }
-
-    // (13:0) {#if pokemon}
+    // (32:0) {#if pokemon_loaded}
     function create_if_block(ctx) {
-    	let a;
-    	let t0;
-    	let a_href_value;
-    	let t1;
     	let each_1_anchor;
-    	let each_value = /*pokemon*/ ctx[0].results;
+    	let each_value = /*pokemon_results*/ ctx[1];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
     		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
     	}
 
+    	let each_1_else = null;
+
+    	if (!each_value.length) {
+    		each_1_else = create_else_block();
+    	}
+
     	return {
     		c() {
-    			a = element("a");
-    			t0 = text("New");
-    			t1 = space();
-
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
     			each_1_anchor = empty();
-    			attr(a, "href", a_href_value = /*pokemon*/ ctx[0].next);
+
+    			if (each_1_else) {
+    				each_1_else.c();
+    			}
     		},
     		m(target, anchor) {
-    			insert(target, a, anchor);
-    			append(a, t0);
-    			insert(target, t1, anchor);
-
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(target, anchor);
     			}
 
     			insert(target, each_1_anchor, anchor);
+
+    			if (each_1_else) {
+    				each_1_else.m(target, anchor);
+    			}
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*pokemon*/ 1 && a_href_value !== (a_href_value = /*pokemon*/ ctx[0].next)) {
-    				attr(a, "href", a_href_value);
-    			}
-
-    			if (dirty & /*pokemon*/ 1) {
-    				each_value = /*pokemon*/ ctx[0].results;
+    			if (dirty & /*pokemon_results*/ 2) {
+    				each_value = /*pokemon_results*/ ctx[1];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -1588,46 +1568,74 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
+
+    				if (each_value.length) {
+    					if (each_1_else) {
+    						each_1_else.d(1);
+    						each_1_else = null;
+    					}
+    				} else if (!each_1_else) {
+    					each_1_else = create_else_block();
+    					each_1_else.c();
+    					each_1_else.m(each_1_anchor.parentNode, each_1_anchor);
+    				}
     			}
     		},
     		d(detaching) {
-    			if (detaching) detach(a);
-    			if (detaching) detach(t1);
     			destroy_each(each_blocks, detaching);
     			if (detaching) detach(each_1_anchor);
+    			if (each_1_else) each_1_else.d(detaching);
     		}
     	};
     }
 
-    // (15:4) {#each pokemon.results as item, i}
+    // (39:2) {:else}
+    function create_else_block(ctx) {
+    	let p;
+
+    	return {
+    		c() {
+    			p = element("p");
+    			p.textContent = "Loading...";
+    		},
+    		m(target, anchor) {
+    			insert(target, p, anchor);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(p);
+    		}
+    	};
+    }
+
+    // (33:2) {#each pokemon_results as pokemon}
     function create_each_block(ctx) {
     	let p;
-    	let t0_value = /*item*/ ctx[1].name + "";
+    	let t0_value = /*pokemon*/ ctx[4].name + "";
     	let t0;
     	let t1;
-    	let t2;
-    	let t3;
+    	let img;
+    	let img_src_value;
 
     	return {
     		c() {
     			p = element("p");
     			t0 = text(t0_value);
     			t1 = space();
-    			t2 = text(/*i*/ ctx[3]);
-    			t3 = space();
+    			img = element("img");
+    			if (img.src !== (img_src_value = /*pokemon*/ ctx[4].sprites.other["official-artwork"].front_default)) attr(img, "src", img_src_value);
+    			attr(img, "alt", "image_" + /*pokemon*/ ctx[4].name);
     		},
     		m(target, anchor) {
     			insert(target, p, anchor);
     			append(p, t0);
-    			append(p, t1);
-    			append(p, t2);
-    			append(p, t3);
+    			insert(target, t1, anchor);
+    			insert(target, img, anchor);
     		},
-    		p(ctx, dirty) {
-    			if (dirty & /*pokemon*/ 1 && t0_value !== (t0_value = /*item*/ ctx[1].name + "")) set_data(t0, t0_value);
-    		},
+    		p: noop,
     		d(detaching) {
     			if (detaching) detach(p);
+    			if (detaching) detach(t1);
+    			if (detaching) detach(img);
     		}
     	};
     }
@@ -1636,40 +1644,34 @@ var app = (function () {
     	let p;
     	let t1;
     	let if_block_anchor;
-
-    	function select_block_type(ctx, dirty) {
-    		if (/*pokemon*/ ctx[0]) return create_if_block;
-    		return create_else_block;
-    	}
-
-    	let current_block_type = select_block_type(ctx);
-    	let if_block = current_block_type(ctx);
+    	let if_block = /*pokemon_loaded*/ ctx[0] && create_if_block(ctx);
 
     	return {
     		c() {
     			p = element("p");
     			p.textContent = "Contact page!";
     			t1 = space();
-    			if_block.c();
+    			if (if_block) if_block.c();
     			if_block_anchor = empty();
     		},
     		m(target, anchor) {
     			insert(target, p, anchor);
     			insert(target, t1, anchor);
-    			if_block.m(target, anchor);
+    			if (if_block) if_block.m(target, anchor);
     			insert(target, if_block_anchor, anchor);
     		},
     		p(ctx, [dirty]) {
-    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
-    				if_block.p(ctx, dirty);
-    			} else {
-    				if_block.d(1);
-    				if_block = current_block_type(ctx);
-
+    			if (/*pokemon_loaded*/ ctx[0]) {
     				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
     			}
     		},
     		i: noop,
@@ -1677,21 +1679,35 @@ var app = (function () {
     		d(detaching) {
     			if (detaching) detach(p);
     			if (detaching) detach(t1);
-    			if_block.d(detaching);
+    			if (if_block) if_block.d(detaching);
     			if (detaching) detach(if_block_anchor);
     		}
     	};
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let pokemon;
+    	let pokemon_list;
+    	let pokemon_results = [];
+    	let pokemon_loaded = false;
 
-    	fetch("https://pokeapi.co/api/v2/pokemon?limit=10&offset=0").then(response => response.json()).then(data => {
-    		$$invalidate(0, pokemon = data);
-    		console.log(pokemon);
+    	onMount(async () => {
+    		await fetch("https://pokeapi.co/api/v2/pokemon?limit=10&offset=0").then(response => response.json()).then(data => {
+    			pokemon_list = data;
+    			recoverPokemon();
+    		});
     	});
 
-    	return [pokemon];
+    	function recoverPokemon() {
+    		pokemon_list.results.forEach(element => {
+    			fetch(element.url).then(response2 => response2.json()).then(data2 => {
+    				pokemon_results.push(data2);
+    				console.log(pokemon_results);
+    				$$invalidate(0, pokemon_loaded = true);
+    			});
+    		});
+    	}
+
+    	return [pokemon_loaded, pokemon_results];
     }
 
     class Contact extends SvelteComponent {
