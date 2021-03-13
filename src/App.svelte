@@ -2,8 +2,9 @@
   import HelloWorld from "./components/HelloWorld.svelte";
   import Header from "./components/layout/Header.svelte";
   import Footer from "./components/layout/Footer.svelte";
+  import Nav from "./components/layout/Nav.svelte";
 
-  // import Router from 'svelte-spa-router';
+  import Router from 'svelte-spa-router';
   import Contact from "./components/pages/Contact.svelte";
   import About from "./components/pages/About.svelte";
   import NotFound from "./components/pages/NotFound.svelte";
@@ -28,13 +29,20 @@
 <div class="parent">
   <header class="pink section">
     <Header {name} />
+    <Nav/>
   </header>
-  <div class="left-side blue section" />
+  <!-- <div class="left-side blue section" /> -->
   <main class="section coral">
-    <HelloWorld />
+    <Router {routes}/>
   </main>
-  <div class="right-side yellow section" />
+  <!-- <div class="right-side yellow section" /> -->
   <footer class="green section">
     <Footer />
   </footer>
 </div>
+
+<style>
+  .coral {
+    padding: 0.5rem 1rem;
+  }
+</style>
