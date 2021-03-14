@@ -5,7 +5,7 @@
   import Nav from "./components/layout/Nav.svelte";
 
   import Router from 'svelte-spa-router';
-  import Contact from "./components/pages/Contact.svelte";
+  import Pokemon from "./components/pages/Pokemon/Pokemon.svelte";
   import About from "./components/pages/About.svelte";
   import NotFound from "./components/pages/NotFound.svelte";
 
@@ -14,7 +14,7 @@
     "/": HelloWorld,
 
     // Using named parameters, with last being optional
-    "/contact": Contact,
+    "/pokemon": Pokemon,
 
     // Wildcard parameter
     "/about": About,

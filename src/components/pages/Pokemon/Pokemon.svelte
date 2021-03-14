@@ -7,7 +7,7 @@
   let columnNumber = 10;
   let offset = 0;
 
-  import Pokecard from  './Contact/Pokecard.svelte';
+  import Pokecard from  './Pokecard.svelte';
 
   onMount(async () => {
     await loadPokemon()
@@ -83,7 +83,7 @@
     border-radius: 6px;
     border: 1px solid var(--text);
     display: flex;
-    
+    justify-content: flex-end;
   }
 
   #columnNumber{

@@ -6,7 +6,7 @@
 <div class="my-nav-container">
     <div class="my-nav">
         <a href="/" use:link use:active>Home</a>
-        <a href="/contact" use:link use:active>Contact</a>
+        <a href="/pokemon" use:link use:active>Pokemon API</a>
         <a href="/about" use:link use:active>About</a>
     </div>
 </div>
