@@ -43,12 +43,9 @@
 
 <div class="modal" role="dialog" aria-modal="true" bind:this={modal}>
 	<slot name="header"></slot>
-	<hr>
-	<slot></slot>
-	<hr>
-
+	<slot name="modal-body"></slot>
 	<!-- svelte-ignore a11y-autofocus -->
-	<button autofocus on:click={close}>close modal</button>
+	<button autofocus on:click={close}>Close</button>
 </div>
 
 <style>
@@ -71,8 +68,8 @@
 		overflow: auto;
 		transform: translate(-50%,-50%);
 		padding: 1em;
-		border-radius: 0.2em;
-		background: white;
+		border-radius: 0.3em;
+		background: var(--light-back);
 	}
 
 	button {

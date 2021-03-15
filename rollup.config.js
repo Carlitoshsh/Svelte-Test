@@ -3,6 +3,9 @@ import resolve from "@rollup/plugin-node-resolve";
 import livereload from "rollup-plugin-livereload";
 import css from "rollup-plugin-css-only";
 import commonjs from "@rollup/plugin-commonjs";
+import { terser } from 'rollup-plugin-terser';
+
+const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
   // Keep a reference to a spawned server process
@@ -42,7 +45,12 @@ export default {
     inlineDynamicImports: true
   },
   plugins: [
-    svelte(),
+    svelte({
+      compilerOptions: {
+				// enable run-time checks when not in production
+				dev: !production
+			}
+    }),
     css({ output: "bundle.css" }),
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
@@ -54,7 +62,16 @@ export default {
       dedupe: ["svelte"],
     }),
     commonjs(),
-    serve(),
-    livereload("public"),
+    // In dev mode, call `npm run start` once
+		// the bundle has been generated
+		!production && serve(),
+
+		// Watch the `public` directory and refresh the
+		// browser on changes when not in production
+		!production && livereload('public'),
+
+		// If we're building for production (npm run build
+		// instead of npm run dev), minify
+		production && terser()
   ],
 };
